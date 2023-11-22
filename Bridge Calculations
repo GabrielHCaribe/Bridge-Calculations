@@ -1,20 +1,27 @@
 clear; close all;
 %% 0. Initialize Parameters
+
 L = 1200; % Length of bridge
 n = 1200; % Discretize into 1 mm seg.
 P = 400; % Total weight of train [N]
 x = linspace(0, L, n+1); % x-axis
+
 %% 1. SFD, BMD under train loading
+
 x_train = [52 228 392 568 732 908]; % Train Load Locations
+x_train = x_train - 908
 P_train = [1 1 1 1 1 1] * P/6;
 n_train = 1200; % num of train locations
+spacing_between_locs = L./n_train
 SFDi = zeros(n_train, n+1); % 1 SFD for each train loc.
 BMDi = zeros(n_train, n+1); % 1 BMD for each train loc.
 % Solve for SFD and BMD with the train at different locations
-for i = 1:n_train
-Nice try % start location of train
-    
+i = 1
+while (x_train(1) <= 1200)
+%Nice try % start location of train
+    x_train  = x_train + (i.*spacing_between_locs) 
 % sum of moments at A eqn
+    %assume all wheels are on bridge then change later
     
 % sum of Fy eqn
 % construct applied loads
@@ -26,16 +33,16 @@ SFD = max(abs(SFDi)); % SFD envelope
 BMD = max(BMDi); % BMD envelope
 %% 2. Define Bridge Parameters
 % = xc, bft, tft,
-param = [0, 100, 1.27, ...
-400, 100, 1.27, ...
-800, 100, 1.27, ...
-L, 100, 1.27,
+%param = [0, 100, 1.27, ...
+%400, 100, 1.27, ...
+%800, 100, 1.27, ...
+%L, 100, 1.27,
 %x_c Location, x, of cross-section change
 %bft Top Flange Width
 %tft Top Flange Thickness
 % Extracting user input assuming linear relationship
-bft = interp1(param(:,1), param(:,2), x);
-tft = interp1(param(:,1), param(:,3), x);
+%bft = interp1(param(:,1), param(:,2), x);
+%tft = interp1(param(:,1), param(:,3), x);
 %% 3. Calculate Sectional Properties
 % ybar. location of centroidal axis from the bottom
 %ybar =
@@ -85,12 +92,12 @@ mu = 0.2;
 %Mf_buck3 =
 %Vf_buckV =
 %% 9. Output plots of Vfail and Mfail
-subplot(2,3,1)
-hold on; grid on; grid minor;
-plot(x, Vf_shear, 'r')
-plot(x, -Vf_shear.* SFD, 'r')
-plot(x, SFDi, 'k');
-plot([0, L], [0, 0], 'k', 'LineWidth', 2)
-legend('Matboard Shear Failure')
-xlabel('Distance along bridge (mm)')
-ylabel('Shear Force (N)')
+% subplot(2,3,1)
+% hold on; grid on; grid minor;
+% plot(x, Vf_shear, 'r')
+% plot(x, -Vf_shear.* SFD, 'r')
+% plot(x, SFDi, 'k');
+% plot([0, L], [0, 0], 'k', 'LineWidth', 2)
+% legend('Matboard Shear Failure')
+% xlabel('Distance along bridge (mm)')
+% ylabel('Shear Force (N)')
