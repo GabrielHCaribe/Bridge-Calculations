@@ -10,20 +10,28 @@ x = linspace(0, L, n+1); % x-axis
 
 x_train = [52 228 392 568 732 908]; % Train Load Locations
 x_train = x_train - 908
-P_train = [1 1 1 1 1 1] * P/6;
+P_train = [90 90 66.666666 66.666666 66.666666 66.666666] %* P/6;
 n_train = 1200; % num of train locations
-spacing_between_locs = L./n_train
+spacing_between_locs = L./n
 SFDi = zeros(n_train, n+1); % 1 SFD for each train loc.
 BMDi = zeros(n_train, n+1); % 1 BMD for each train loc.
 % Solve for SFD and BMD with the train at different locations
-i = 1
-while (x_train(1) <= 1200)
+
+while (x_train(1) <= 172)
 %Nice try % start location of train
-    x_train  = x_train + (i.*spacing_between_locs) 
+    x_train  = x_train + spacing_between_locs 
 % sum of moments at A eqn
     %assume all wheels are on bridge then change later
-    
+    By = 0;
+    for i = 1:6
+        By = By + P_train(i).*(x_train(i)./1000); % Calculats By in [N*m]
+    end
+    By = By./(L./1000)  % By in [N]
+
 % sum of Fy eqn
+    t_w_on_b = cumsum(P_train);  % train_weight_on_bridge 
+    % change this ^ to only include the wheels on the bridge
+    Ay = t_w_on_b(end) - By    % Calculates the reaction force at A in [N]
 % construct applied loads
 % w(x)
 % SFD = num. integral(w)
