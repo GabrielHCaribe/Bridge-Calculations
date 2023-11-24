@@ -145,19 +145,26 @@ mu = 0.2;
 %S_buck3 =
 %T_buck =
 
-% 6. FOS
-FOS_tens = t_allowable./S_top
-FOS_comp = c_allowable./S_bot
-FOS_shear = shear_allowable./T_cent
-FOS_glue = glue_allowable./T_glue
-FOS_buck1 = case1./ S_top
-FOS_buck2 = case2./ S_top
-FOS_buck3 = case3./ S_top
-FOS_buckV = case4./ V_cent
+% 7. Min FOS and the failure load Pfail
+minFOS = min([FOS_buck1, FOS_buck2, FOS_buck3, FOS_buckV, FOS_glue, FOS_shear, FOS_comp, FOS_tens])
 
-%% 7. Min FOS and the failure load Pfail
-%minFOS =
-%Pf =
+if minFOS == FOS_tens
+"Yielding in Tension"
+elseif minFOS == FOS_comp
+"Yielding in Compression"
+elseif minFOS == FOS_shear
+"Shear Failure At Centroid"
+elseif minFOS == FOS_glue
+"Shear Failure At Glue Joint"
+elseif minFOS == FOS_buck1
+"Case 1 Buckling (Top Flange)"
+elseif minFOS == FOS_buck2
+"Case 2 Buckling (Top Flange Overhang)"
+elseif min_FOS == FOS_buck3
+"Case 3 Buckling(Side Flanges)"
+elseif min_FOS == FOS_buckV
+"Case 4 Buckling (Shear Buckling)"
+end
 
 %% 8. Vfail and Mfail
 %Mf_tens =
