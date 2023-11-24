@@ -57,7 +57,7 @@ while (x_train(1) <= 1199)
     % SFD = num. integral(w)
     SFDi(cur_spot_on_bridge,:) = cumsum(w);
     % BMD = num. integral(SFD)
-    BMDi(cur_spot_on_bridge,:) = cumsum(SFDi(cur_spot_on_bridge));
+    BMDi(cur_spot_on_bridge,:) = cumsum(SFDi(cur_spot_on_bridge,:));
 end
 SFD = max(abs(SFDi)); % SFD envelope
 BMD = max(BMDi); % BMD envelope
@@ -126,7 +126,8 @@ mu = 0.2;
 % hold on; grid on; grid minor;
 % plot(x, Vf_shear, 'r')
 % plot(x, -Vf_shear.* SFD, 'r')
-plot(x, SFDi(1080,:), 'k');
+plot(x, SFDi(1080,:), 'k')
+plot(x, BMDi(1080,:), 'k')
 % plot([0, L], [0, 0], 'k', 'LineWidth', 2)
 % legend('Matboard Shear Failure')
 % xlabel('Distance along bridge (mm)')
