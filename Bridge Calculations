@@ -61,6 +61,8 @@ while (x_train(1) <= 1199)
 end
 SFD = max(abs(SFDi)); % SFD envelope
 BMD = max(BMDi); % BMD envelope
+
+
 %% 2. Define Bridge Parameters
 % = xc, bft, tft,
 %param = [0, 100, 1.27, ...
@@ -84,11 +86,13 @@ BMD = max(BMDi); % BMD envelope
 %Qcent =
 % Q at glue location
 %Qglue =
+
 %% 4. Calculate Applied Stress
-%S_top =
-%S_bot =
-%T_cent =
-%T_glue =
+S_top = max(BMD).*(h - ybar)/I; %top bending stress
+S_bot = max(BMD).*(ybar)/I; %bottom bending stress
+T_cent = (max(SFD).*Q_cent)/(I*b_cent); %centriod shear stress
+T_glue = (max(SFD).*Q_glue)/(I*b_glue); %glue shear stress
+
 %% 5. Material and Thin Plate Buckling Capacities
 E = 4000;
 mu = 0.2;
