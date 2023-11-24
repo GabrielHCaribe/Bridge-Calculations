@@ -4,24 +4,27 @@ clear; close all;
 L = 1200; % Length of bridge
 n = 1200; % Discretize into 1 mm seg.
 P = 400; % Total weight of train [N]
-x = linspace(0, L, n+1); % x-axis
+x = linspace(0, L, n); % x-axis
 
 %% 1. SFD, BMD under train loading
 
 x_train = [52 228 392 568 732 908]; % Train Load Locations
 x_train = x_train - 908;
-P_train = [90 90 66.666666 66.666666 66.666666 66.666666] %* P/6;
-n_train = 1200; % num of train locations
+P_train = [90 90 66.666666 66.666666 66.666666 66.666666]; %* P/6;
+n_train = 2056; % num of train locations
 spacing_between_locs = L./n;
-SFDi = zeros(n_train, n+1); % 1 SFD for each train loc.
-BMDi = zeros(n_train, n+1); % 1 BMD for each train loc.
+SFDi = zeros(n_train, n); % 1 SFD for each train loc.
+BMDi = zeros(n_train, n); % 1 BMD for each train loc.
 % Solve for SFD and BMD with the train at different locations
 
-while (x_train(1) <= 1200)
+w = zeros(1, L);      % applied loads
+cur_spot_on_bridge = 0;
+while (x_train(1) <= 1199)
+    cur_spot_on_bridge = cur_spot_on_bridge + 1;
 % start location of train
     x_train  = x_train + spacing_between_locs; 
 % sum of moments at A eqn
-    
+    w(:) = 0;  % Reset w
     By = 0;    % Reaction force By
     t_w_on_b = 0;    % train_weight_on_bridge 
     for i = 1:6
@@ -39,8 +42,22 @@ while (x_train(1) <= 1200)
 
 % construct applied loads
 % w(x)
-% SFD = num. integral(w)
-% BMD = num. integral(SFD)
+    for i = 1:L
+        for j = 1:6
+            if x_train(j) == i
+                w(i) = -P_train(j);
+            end
+        end
+    end
+    % first index will be Ay, following indices will be applied loads
+    w(1) = w(1) + Ay;
+    %last index will be By
+    w(L) = w(L) + By;
+
+    % SFD = num. integral(w)
+    SFDi(cur_spot_on_bridge,:) = cumsum(w);
+    % BMD = num. integral(SFD)
+    BMDi(cur_spot_on_bridge,:) = cumsum(SFDi(cur_spot_on_bridge));
 end
 SFD = max(abs(SFDi)); % SFD envelope
 BMD = max(BMDi); % BMD envelope
