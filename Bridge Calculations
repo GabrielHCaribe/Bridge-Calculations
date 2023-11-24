@@ -64,28 +64,68 @@ BMD = max(BMDi); % BMD envelope
 
 
 %% 2. Define Bridge Parameters
-% = xc, bft, tft,
-%param = [0, 100, 1.27, ...
-%400, 100, 1.27, ...
-%800, 100, 1.27, ...
-%L, 100, 1.27,
+% = xc, tfw, tft, gfw, gft, wfw, wft, gfw2, gft2, bfw, bft
+% length of bridge (can modify)
+L = 1200
+% parameter for interpolating each parameter
+% if there is a change in cross section, might need add an extra row for interp1 to interpolate linearly
+% e.g. Change @ 400mm: (400, cross section 1), (401, cross section 2)
+x = linspace(0,1000,1)
+param = [0, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27;
+400, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27; 
+800, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27; 
+L, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27]
+
 %x_c Location, x, of cross-section change
-%bft Top Flange Width
+%tfw Top Flange Width
 %tft Top Flange Thickness
+%gfw Glue Flange Width
+%gft Glue Flange Thickness
+%wfw Wing Flange Width
+%wft Wing Flange Thickness
+%gfw2 Glue Flange Width (bottom)
+%gft2 Glue Flange Thickness (bottom)
+%bfw Bottom Flange Width
+%bft Bottom Flange Thickness                                                                                                                                    
+
 % Extracting user input assuming linear relationship
-%bft = interp1(param(:,1), param(:,2), x);
-%tft = interp1(param(:,1), param(:,3), x);
+tfw = interp1(param(:,1), param(:,2), x);
+tft = interp1(param(:,1), param(:,3), x);
+gfw = interp1(param(:,1), param(:,4), x);
+gft = interp1(param(:,1), param(:,5), x);
+wfw = interp1(param(:,1), param(:,6), x);
+wft = interp1(param(:,1), param(:,7), x);
+gfw2 = interp1(param(:,1), param(:,8), x);
+gft2 = interp1(param(:,1), param(:,9), x);
+bfw = interp1(param(:,1), param(:,10), x);
+bft = interp1(param(:,1), param(:,11), x);
+
 %% 3. Calculate Sectional Properties
 % ybar. location of centroidal axis from the bottom
-%ybar =
-%ybot =
-%ytop =
+height = tft + gft + wft + gft2 + bft
+total_area = tfw * tft + 2 * gfw * gft + 2 * wfw * wft + 2 * gfw2 * gft2 + bfw * bft
+total_area_height = bfw * bft * (bft/2) + 2 * gfw2 * gft2 * (bft + gft2/2) + 2 * wfw * wft * (bft + gft2 + wft/2) + 2 * gfw * gft * (bft + gft2 + wft + gft/2) + tfw * tft * (bft + gft2 + wft + gft + tft/2)
+ybar = total_area_height / total_area 
+ybot = ybar 
+ytop = height - ybar
+
 % I
-%I =
+I_bars = 1 / 12 * (tfw * tft^3 + 2 * gfw * gft^3 + 2 * wfw * wft^3 + 2 * gfw2 * gft2^3 + bfw * bft^3)
+I_parallel = bfw * bft * (ybar - (bft/2))^2 + 2 * gfw2 * gft2 * (ybar - (bft + gft2/2))^2 + 2 * wfw * wft * (ybar - (bft + gft2 + wft/2))^2 + 2 * gfw * gft * (ybar - (bft + gft2 + wft + gft/2))^2 + tfw * tft * (ybar - (bft + gft2 + wft + gft + tft/2))^2
+I_total = I_bars + I_parallel   
+
 % Q at centroidal axes
-%Qcent =
-% Q at glue location
-%Qglue =
+
+% this formula is sketchy because I don't know if the centroid will cross
+% the wing in every cross section design... probably double check this
+% value
+Qcent_top = tfw * tft * (ytop - tft/2) + 2 * gfw * gft * (ytop - tft - gft/2) + 2 * wfw * wft * (ytop - tft - gft)/2
+Qcent_bot = bfw * bft * (ybot - bft/2) + 2 * gfw2 * gft2 * (ybot - bft - gft2/2) + 2 * wfw * wft * (ybot - bft - gft2)/2
+% Q from top should be equal to bottom, so check if these values are same
+
+% Q at glue location (top glue tab)
+Qglue = tfw * tft * (ytop - tft/2)
+
 
 %% 4. Calculate Applied Stress
 S_top = max(BMD).*(h - ybar)/I; %top bending stress
