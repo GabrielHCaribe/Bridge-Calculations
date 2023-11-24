@@ -171,10 +171,11 @@ end
 %Mf_comp =
 %Vf_shear =
 %Vf_glue =
-%Mf_buck1 =
-%Mf_buck2 =
-%Mf_buck3 =
-%Vf_buckV =
+%Mf_buck1 = ((4.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t./b)^2) 
+%Mf_buck2 = ((0.425.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t./b)^2)
+%Mf_buck3 = ((6.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t./b)^2)
+%Vf_buckV = ((5.*(pi^2).*E)/(12.*(1-((mu)^2)))).*(((t./b)^2) + ((t./a)^2))
+% determine values for t and b
 %% 9. Output plots of Vfail and Mfail
 % subplot(2,3,1)
 % hold on; grid on; grid minor;
