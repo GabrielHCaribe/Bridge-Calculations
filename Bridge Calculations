@@ -104,18 +104,21 @@ mu = 0.2;
 %S_buck2 =
 %S_buck3 =
 %T_buck =
-%% 6. FOS
-%FOS_tens =
-%FOS_comp =
-%FOS_shear =
-%FOS_glue =
-%FOS_buck1 =
-%FOS_buck2 =
-%FOS_buck3 =
-%FOS_buckV =
+
+% 6. FOS
+FOS_tens = t_allowable./S_top
+FOS_comp = c_allowable./S_bot
+FOS_shear = shear_allowable./T_cent
+FOS_glue = glue_allowable./T_glue
+FOS_buck1 = case1./ S_top
+FOS_buck2 = case2./ S_top
+FOS_buck3 = case3./ S_top
+FOS_buckV = case4./ V_cent
+
 %% 7. Min FOS and the failure load Pfail
 %minFOS =
 %Pf =
+
 %% 8. Vfail and Mfail
 %Mf_tens =
 %Mf_comp =
