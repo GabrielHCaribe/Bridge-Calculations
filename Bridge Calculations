@@ -136,17 +136,37 @@ T_glue = (max(SFD).*Q_glue)/(I*b_glue); %glue shear stress
 %% 5. Material and Thin Plate Buckling Capacities
 E = 4000;
 mu = 0.2;
-%S_tens =
-%S_comp =
-%T_max =
-%T_gmax =
-%S_buck1 =
-%S_buck2 =
-%S_buck3 =
-%T_buck =
+% S_tens = 30;
+% S_comp = 6;
+% T_max = 4;
+% T_gmax = 2;
+% t1 = 1.27;
+% b1 = 80-(6.27*2);
+% S_buck1 = ((4.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t1./b1)^2);
+% t2 = 1.27;
+% b2 = 10;
+% S_buck2 = ((0.425.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t2./b2)^2);
+% t3 = 1.27;
+% b3 = ytop - t1;
+% S_buck3 = ((6.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t3./b3)^2);
+% t4 = 1.27;
+% h = 75;
+% a = 1200;
+% T_buck = ((5.*(pi^2).*E)/(12.*(1-((mu)^2)))).*(((t4./h)^2) + ((t4./a)^2));
+
+%% 6. FOS
+% FOS_tens = S_tens./S_bot;
+% FOS_comp = S_comp./S_top;
+% FOS_shear = T_max./Vf_shear;
+% FOS_glue = T_gmax./Vf_glue;
+% FOS_buck1 = S_buck1./ Mf_buck1;
+% FOS_buck2 = S_buck2./ Mf_buck2;
+% FOS_buck3 = S_buck3./ Mf_buck3;
+% FOS_buckV = T_buck./ Mf_buckV;
 
 % 7. Min FOS and the failure load Pfail
-minFOS = min([FOS_buck1, FOS_buck2, FOS_buck3, FOS_buckV, FOS_glue, FOS_shear, FOS_comp, FOS_tens])
+%minFOS = min([FOS_buck1, FOS_buck2, FOS_buck3, FOS_buckV, FOS_glue, FOS_shear, FOS_comp, FOS_tens])
+%Pf =
 
 if minFOS == FOS_tens
 "Yielding in Tension"
@@ -167,15 +187,25 @@ elseif min_FOS == FOS_buckV
 end
 
 %% 8. Vfail and Mfail
-%Mf_tens =
+
+%Mf_tens = 
 %Mf_comp =
-%Vf_shear =
-%Vf_glue =
-%Mf_buck1 = ((4.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t./b)^2) 
-%Mf_buck2 = ((0.425.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t./b)^2)
-%Mf_buck3 = ((6.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t./b)^2)
-%Vf_buckV = ((5.*(pi^2).*E)/(12.*(1-((mu)^2)))).*(((t./b)^2) + ((t./a)^2))
+% Q = 
+% b =
+%Vf_shear = (max(SFD).*Q)./(I_total.*b)
+% b =
+%Vf_glue = (max(SFD).*Q_glue)./(I_total.*b)
+%y = 
+%Mf_buck1 = (max(BMD).*y)./(I_total)
+%y = 
+%Mf_buck2 = (max(BMD).*y)./(I_total)
+%y = 
+%Mf_buck3 = (max(BMD).*y)./(I_total)
+% Q = 
+% b =
+%Vf_buckV = (max(SFD).*Q)./(I_total.*b)
 % determine values for t and b
+
 %% 9. Output plots of Vfail and Mfail
 % subplot(2,3,1)
 % hold on; grid on; grid minor;
