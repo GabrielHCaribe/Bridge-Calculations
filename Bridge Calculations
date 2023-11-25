@@ -119,8 +119,8 @@ I_total = I_bars + I_parallel
 % this formula is sketchy because I don't know if the centroid will cross
 % the wing in every cross section design... probably double check this
 % value
-Qcent_top = tfw * tft * (ytop - tft/2) + 2 * gfw * gft * (ytop - tft - gft/2) + 2 * wfw * wft * (ytop - tft - gft)/2
-Qcent_bot = bfw * bft * (ybot - bft/2) + 2 * gfw2 * gft2 * (ybot - bft - gft2/2) + 2 * wfw * wft * (ybot - bft - gft2)/2
+Qcent_top = tfw * tft * (ytop - tft/2) + 2 * gfw * gft * (ytop - tft - gft/2) + 2 * wfw * (ytop - tft - gft) * (ytop - tft - gft)/2
+Qcent_bot = bfw * bft * (ybot - bft/2) + 2 * gfw2 * gft2 * (ybot - bft - gft2/2) + 2 * wfw * (ybot - bft - gft2) * (ybot - bft - gft2)/2
 % Q from top should be equal to bottom, so check if these values are same
 
 % Q at glue location (top glue tab)
