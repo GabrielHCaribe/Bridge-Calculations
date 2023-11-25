@@ -169,8 +169,13 @@ FOS_buck2 = S_buck2./ S_top;
 FOS_buck3 = S_buck3./ S_top;
 FOS_buckV = T_buck./ T_cent;
 
+min_FOS_buck1 = min(FOS_buck1)
+min_FOS_buck2 = min(FOS_buck2)
+min_FOS_buck3 = min(FOS_buck3)
+min_FOS_buckV = min(FOS_buckV)
+
 % 7. Min FOS and the failure load Pfail
-%minFOS = min([FOS_buck1, FOS_buck2, FOS_buck3, FOS_buckV, FOS_glue, FOS_shear, FOS_comp, FOS_tens])
+%minFOS = min([min_FOS_buck1, min_FOS_buck2, min_FOS_buck3, min_FOS_buckV, FOS_glue, FOS_shear, FOS_comp, FOS_tens])
 %Pf =
 
 if minFOS == FOS_tens
