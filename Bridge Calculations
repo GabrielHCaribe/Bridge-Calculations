@@ -188,23 +188,14 @@ end
 
 %% 8. Vfail and Mfail
 
-%Mf_tens = 
-%Mf_comp =
-% Q = 
-% b =
-%Vf_shear = (max(SFD).*Q)./(I_total.*b)
-% b =
-%Vf_glue = (max(SFD).*Q_glue)./(I_total.*b)
-%y = 
-%Mf_buck1 = (max(BMD).*y)./(I_total)
-%y = 
-%Mf_buck2 = (max(BMD).*y)./(I_total)
-%y = 
-%Mf_buck3 = (max(BMD).*y)./(I_total)
-% Q = 
-% b =
-%Vf_buckV = (max(SFD).*Q)./(I_total.*b)
-% determine values for t and b
+%Mf_tens = FOS_tens./BMD;    % might need to be max(BMD) or max(SFD)
+%Mf_comp = FOS_comp./BMD;
+%Vf_shear = FOS_shear./SFD;
+%Vf_glue = FOS_glue./SFD;
+%Mf_buck1 = FOS_buck1./BMD;
+%Mf_buck2 = FOS_buck2./BMD;
+%Mf_buck3 = FOS_buck3./BMD;
+%Vf_buckV = FOS_buckV./SFD;
 
 %% 9. Output plots of Vfail and Mfail
 % subplot(2,3,1)
