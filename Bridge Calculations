@@ -128,41 +128,46 @@ Qglue = tfw * tft * (ytop - tft/2)
 
 
 %% 4. Calculate Applied Stress
-S_top = max(BMD).*(h - ybar)/I; %top bending stress
-S_bot = max(BMD).*(ybar)/I; %bottom bending stress
-T_cent = (max(SFD).*Q_cent)/(I*b_cent); %centriod shear stress
-T_glue = (max(SFD).*Q_glue)/(I*b_glue); %glue shear stress
+
+S_top = max(BMD).*(height - ybar)/I_total; %top bending stress
+S_bot = max(BMD).*(ybar)/I_total; %bottom bending stress
+b_cent = 1.27*2;
+T_cent = (max(SFD).*Qcent_top)/(I_total*b_cent); %centriod shear stress
+b_glue = (1.27*2) + (5*2);
+T_glue = (max(SFD).*Qglue)/(I_total*b_glue); %glue shear stress
 
 %% 5. Material and Thin Plate Buckling Capacities
+
 E = 4000;
 mu = 0.2;
-% S_tens = 30;
-% S_comp = 6;
-% T_max = 4;
-% T_gmax = 2;
-% t1 = 1.27;
-% b1 = 80-(6.27*2);
-% S_buck1 = ((4.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t1./b1)^2);
-% t2 = 1.27;
-% b2 = 10;
-% S_buck2 = ((0.425.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t2./b2)^2);
-% t3 = 1.27;
-% b3 = ytop - t1;
-% S_buck3 = ((6.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t3./b3)^2);
-% t4 = 1.27;
-% h = 75;
-% a = 1200;
-% T_buck = ((5.*(pi^2).*E)/(12.*(1-((mu)^2)))).*(((t4./h)^2) + ((t4./a)^2));
+S_tens = 30;
+S_comp = 6;
+T_max = 4;
+T_gmax = 2;
+t1 = 1.27;
+b1 = 80-(6.27*2);
+S_buck1 = ((4.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t1./b1)^2);
+t2 = 1.27;
+b2 = 10;
+S_buck2 = ((0.425.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t2./b2)^2);
+t3 = 1.27;
+b3 = ytop - t1;
+S_buck3 = ((6.*(pi^2).*E)/(12.*(1-((mu)^2)))).*((t3./b3)^2);
+t4 = 1.27;
+h = 75;
+a = 1200;
+T_buck = ((5.*(pi^2).*E)/(12.*(1-((mu)^2)))).*(((t4./h)^2) + ((t4./a)^2));
 
 %% 6. FOS
-% FOS_tens = S_tens./S_bot;
-% FOS_comp = S_comp./S_top;
-% FOS_shear = T_max./Vf_shear;
-% FOS_glue = T_gmax./Vf_glue;
-% FOS_buck1 = S_buck1./ Mf_buck1;
-% FOS_buck2 = S_buck2./ Mf_buck2;
-% FOS_buck3 = S_buck3./ Mf_buck3;
-% FOS_buckV = T_buck./ Mf_buckV;
+
+FOS_tens = S_tens./S_bot;
+FOS_comp = S_comp./S_top;
+FOS_shear = T_max./T_cent;
+FOS_glue = T_gmax./T_glue;
+FOS_buck1 = S_buck1./ S_top;
+FOS_buck2 = S_buck2./ S_top;
+FOS_buck3 = S_buck3./ S_top;
+FOS_buckV = T_buck./ T_cent;
 
 % 7. Min FOS and the failure load Pfail
 %minFOS = min([FOS_buck1, FOS_buck2, FOS_buck3, FOS_buckV, FOS_glue, FOS_shear, FOS_comp, FOS_tens])
