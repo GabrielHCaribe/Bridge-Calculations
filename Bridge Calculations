@@ -81,6 +81,34 @@ param = [0, 100, 3.81, 7.54, 1.27, 2.54, 83.73, 0, 0, 0, 0;
 param = [0, 100, 3.81, 6.27, 1.27, 1.27, 70, 0, 0, 75, 1.27;
 L, 100, 3.81, 6.27, 1.27, 1.27, 70, 0, 0, 75, 1.27;]
 
+
+%find if there is enough material
+col = numel(param)/length(param)
+vol = 0
+% may need to use 1:2:col-1 if there are changes in cross section
+for i = 1:col-1
+    if i ~= col-1
+        len = param(i+1,1) - param(i,1);
+    else
+        len = 1260 - param(i,1);
+    end
+    for j = 2:2:length(param)-1
+        if j == 4 || j == 6 || j == 8 
+            vol = vol + 2*len*param(i,j)*param(i,j+1)
+        else 
+            vol = vol + len*param(i,j)*param(i,j+1)
+        end 
+    end 
+end
+area = vol/1.27
+disp(area)
+
+if (area < 826008)
+    disp("Enough matboard")
+else
+    disp("Not enough matboard")
+end
+
 %x_c Location, x, of cross-section change
 %tfw Top Flange Width
 %tft Top Flange Thickness
