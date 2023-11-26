@@ -62,24 +62,27 @@ end
 SFD = max(abs(SFDi)); % SFD envelope
 BMD = max(BMDi); % BMD envelope
 %% 2. Define Bridge Parameters
-% = xc, tfw, tft, gfw, gft, wfw, wft, gfw2, gft2, bfw, bft
+% = xc, tfw, tft, tfw_2, tft_2, gfw, gft, wfw, wft, gfw2, gft2, bfw, bft
 % length of bridge (can modify)
 % L = 1200
 % % parameter for interpolating each parameter
 % % if there is a change in cross section, might need add an extra row for interp1 to interpolate linearly
 % % e.g. Change @ 400mm: (400, cross section 1), (401, cross section 2)
 x = linspace(0,1000,1);
-param = [0, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27;
-400, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27; 
-800, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27; 
-L, 100, 1.27, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27];
 
+% design 0
+param = [0, 100, 1.27, 0, 0, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27;
+400, 100, 1.27, 0, 0, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27; 
+800, 100, 1.27, 0, 0, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27; 
+L, 100, 1.27, 0, 0, 6.27, 1.27, 1.27, 72.46, 0, 0, 80, 1.27]
+
+% design 1
 param = [0, 100, 3.81, 7.54, 1.27, 2.54, 83.73, 0, 0, 0, 0;
  L, 100, 3.81, 7.54, 1.27, 2.54, 83.73, 0, 0, 0, 0;]
 
-%design 2
-param = [0, 100, 3.81, 6.27, 1.27, 1.27, 70, 0, 0, 75, 1.27;
-L, 100, 3.81, 6.27, 1.27, 1.27, 70, 0, 0, 75, 1.27;]
+% design 2
+param = [0, 100, 3.81, 0, 0, 6.27, 1.27, 1.27, 70, 0, 0, 75, 1.27;
+L, 100, 3.81, 0, 0, 6.27, 1.27, 1.27, 70, 0, 0, 75, 1.27;]
 
 
 %find if there is enough material
@@ -93,7 +96,7 @@ for i = 1:col-1
         len = 1260 - param(i,1);
     end
     for j = 2:2:length(param)-1
-        if j == 4 || j == 6 || j == 8 
+        if j == 6 || j == 8 || j == 10 
             vol = vol + 2*len*param(i,j)*param(i,j+1)
         else 
             vol = vol + len*param(i,j)*param(i,j+1)
@@ -112,6 +115,8 @@ end
 %x_c Location, x, of cross-section change
 %tfw Top Flange Width
 %tft Top Flange Thickness
+%tfw_2 Top Subflange Width
+%tft_2 Top Subflange Thickness
 %gfw Glue Flange Width
 %gft Glue Flange Thickness
 %wfw Wing Flange Width
@@ -124,14 +129,17 @@ end
 % Extracting user input assuming linear relationship
 tfw = interp1(param(:,1), param(:,2), x);
 tft = interp1(param(:,1), param(:,3), x);
-gfw = interp1(param(:,1), param(:,4), x);
-gft = interp1(param(:,1), param(:,5), x);
-wfw = interp1(param(:,1), param(:,6), x);
-wft = interp1(param(:,1), param(:,7), x);
-gfw2 = interp1(param(:,1), param(:,8), x);
-gft2 = interp1(param(:,1), param(:,9), x);
-bfw = interp1(param(:,1), param(:,10), x);
-bft = interp1(param(:,1), param(:,11), x);
+tfw_2 = interp1(param(:,1), param(:,4), x);
+tft_2 = interp1(param(:,1), param(:,5), x);
+gfw = interp1(param(:,1), param(:,6), x);
+gft = interp1(param(:,1), param(:,7), x);
+wfw = interp1(param(:,1), param(:,8), x);
+wft = interp1(param(:,1), param(:,9), x);
+gfw2 = interp1(param(:,1), param(:,10), x);
+gft2 = interp1(param(:,1), param(:,11), x);
+bfw = interp1(param(:,1), param(:,12), x);
+bft = interp1(param(:,1), param(:,13), x);
+
 % 
 %% 3. Calculate Sectional Properties
 % ybar. location of centroidal axis from the bottom
@@ -141,19 +149,28 @@ total_area_height = bfw * bft * (bft/2) + 2 * gfw2 * gft2 * (bft + gft2/2) + 2 *
 ybar = total_area_height / total_area ; 
 ybot = ybar ;
 ytop = height - ybar ;
+%% 3. Calculate Sectional Properties
+% ybar. location of centroidal axis from the bottom
+height = tft + tft_2 + gft + wft + gft2 + bft
+total_area = tfw * tft + tfw_2 * tft_2 + 2 * gfw * gft + 2 * wfw * wft + 2 * gfw2 * gft2 + bfw * bft
+total_area_height = bfw * bft * (bft/2) + tfw_2 * tft_2 * (bft + tft_2/2) + 2 * gfw2 * gft2 * (bft + tft_2 + gft2/2) + 2 * wfw * wft * (bft + tft_2 + gft2 + wft/2) + 2 * gfw * gft * (bft + tft_2 + gft2 + wft + gft/2) + tfw * tft * (bft + tft_2 + gft2 + wft + gft + tft/2)
+ybar = total_area_height / total_area 
+ybot = ybar 
+ytop = height - ybar
 
 % I
-I_bars = 1 / 12 * (tfw * tft^3 + 2 * gfw * gft^3 + 2 * wfw * wft^3 + 2 * gfw2 * gft2^3 + bfw * bft^3) ;
-I_parallel = bfw * bft * (ybar - (bft/2))^2 + 2 * gfw2 * gft2 * (ybar - (bft + gft2/2))^2 + 2 * wfw * wft * (ybar - (bft + gft2 + wft/2))^2 + 2 * gfw * gft * (ybar - (bft + gft2 + wft + gft/2))^2 + tfw * tft * (ybar - (bft + gft2 + wft + gft + tft/2))^2 ;
-I_total = I_bars + I_parallel ;   
+I_bars = 1 / 12 * (tfw * tft^3 + tfw_2 * tft_2^3 + 2 * gfw * gft^3 + 2 * wfw * wft^3 + 2 * gfw2 * gft2^3 + bfw * bft^3)
+I_parallel = bfw * bft * (ybar - (bft/2))^2 + 2 * gfw2 * gft2 * (ybar - (bft + gft2/2))^2 + 2 * wfw * wft * (ybar - (bft + gft2 + wft/2))^2 + 2 * gfw * gft * (ybar - (bft + gft2 + wft + gft/2))^2 + tfw_2 * tft_2 * (ybar - (bft + gft2 + wft + gft + tft_2/2))^2 + tfw * tft * (ybar - (bft + gft2 + wft + gft + tft_2 + tft/2))^2
+I_total = I_bars + I_parallel   
 
 % Q at centroidal axes
 
 % this formula is sketchy because I don't know if the centroid will cross
 % the wing in every cross section design... probably double check this
 % value
-Qcent_top = tfw * tft * (ytop - tft/2) + 2 * gfw * gft * (ytop - tft - gft/2) + 2 * wfw * (ytop - tft - gft) * (ytop - tft - gft)/2;
-Qcent_bot = bfw * bft * (ybot - bft/2) + 2 * gfw2 * gft2 * (ybot - bft - gft2/2) + 2 * wfw * (ybot - bft - gft2) * (ybot - bft - gft2)/2;
+Qcent_top = tfw * tft * (ytop - tft/2) + tfw_2 * tft_2 * (ytop - tft - tft_2/2) + 2 * gfw * gft * (ytop - tft - tft_2 - gft/2) + 2 * wfw * (ytop - tft - tft_2 - gft) * (ytop - tft - tft_2 - gft)/2
+Qcent_bot = bfw * bft * (ybot - bft/2) + 2 * gfw2 * gft2 * (ybot - bft - gft2/2) + 2 * wfw * (ybot - bft - gft2) * (ybot - bft - gft2)/2
+
 % Q from top should be equal to bottom, so check if these values are same
 
 % Q at glue location (top glue tab)
